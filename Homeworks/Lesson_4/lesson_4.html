@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <header></header>
+        <main id="target" class="target" name="target"></main>
+        <article></article>
+        <footer></footer>
+        <script>
+            // Проверяем себя, если не понимаем почему так а не иначе пишем в чат или в ЛС, желательно объяснять почему то или иное решение
+
+            // Типы данных
+
+            console.log([1, 2, 3] + " is the answer."); // "1,2,3 is the answer" - массив будет приведен к строке "1,2,3", далее конкатенация строк
+            console.log(false || true * 2); // ? 2 - "или" вернет первый верный (true*2),true будет приведено к числу 1
+            console.log({ valueOf: () => 42 } * 2); // ? 84 - мы переопределили метод valueOf у объекта, поэтому при приведении к числу его, получим 42
+            console.log(parseInt("7.5") + parseFloat("2.5")); // ? 9,5 - 7+2.5
+            console.log(!!"Hello" - 1); // ?0 - сначала непустая строка будет приведена к true, затем к числу при вычитании. Т.о. получим 1-1
+            console.log(new String("hello") instanceof Object); // ? true - из-за способа создания строки, создается объект, внутри которого посимвольно под цифровыми ключами лежат элементы строки
+            console.log((true ^ false) === (false ^ true)); // ? true - xor 1^0 и 0^1 равны, так как используются одни и те же числа в качестве операндов, и результат всегда 1
+            console.log(true && "5" + 5); // ? "55" - && вернет последний верный, к строке 5 конкатенируем 5
+            console.log({ valueOf: () => "10", toString: () => "20" } + 5); // ?105 - при приведении объекта сначала будет вызван valueOf, получаем на выходе примитив "10", далее уже конкатенируем 5
+            console.log((5).toString() === "5"); // ?true - "5" равно строке 5
+            console.log(null || false || undefined); // ? undefined - выражение вернет последний неверный
+            console.log(0 || 2 || NaN); // ? 2 - вернуло первый верный
+            console.log(1 && null && 2); // ?null - вернуло первый неверный
+
+            //
+
+            function xy() {}
+
+            console.log(typeof xy); //? - function - специальный тип для функций
+            console.log(xy instanceof Object); //? true - instanceof проверяет, присутствует ли в цепочке прототипов Конструктор. Объект присутствует у функции ху
+            console.log(xy instanceof Function); //? true - аналогично
+
+            var str1 = String(123);
+            var str2 = new String(123);
+
+            console.log(typeof str1 === typeof str2); //? false - строка "string" не равна строке "object"
+            console.log(str1 === str2); //? false - строка не равна объекту
+            console.log(str1 === String(123)); //? true - две одинаковые строки равны
+            console.log(str2 === new String(123)); //? false - два объекта с одинаковыми телами не равны, т.к. разные ссылки
+            console.log(str1 === 123); //? false - при строгом сравнении строка не равна числу никогда
+            console.log(str1 === "123"); //? true - две одинаковые строки равны
+            console.log(str1 == str2); //? true - при приведении типов str2 вернет нам просто строку
+            console.log(str1 == 123); //? true - число будет приведено к строке, строки с одинаковым содержимым равны
+            console.log(str1 == "123"); //? true - строка, созданная при помощи String идентична обычной строке через "кавычки"
+
+            var arr = [];
+            console.log(typeof arr); //? object
+
+            var str3 = "123";
+            str3[0] = "2"; // мы можем только получить значение, но не изменить его
+            console.log(str3); //? "123"
+
+            var p = 1 + 2 + 3 + ""; //'6', если любой из операндов строка, то при сложении второй операнд тоже приводится к строке
+            var z = "" + 1 + 2 + 3; // '1,2,3', просто конкатенация чисел, приводимых к строкам
+
+            console.log(p, typeof p); // ? строка
+            console.log(z, typeof z); // ? строка
+
+            var o = "123x";
+
+            console.log(Number(o)); // ? NaN, так как приводим к числу строку, содержащую букву
+            console.log(parseInt(o, 10)); // 123, так как данный метод забирает всю целочисленную часть строки
+            console.log(+o); // NaN, так как приводим к числу строку, содержащую букву
+            console.log(typeof +o); // ? number, так как нечисло - число
+            console.log(Boolean(String(false))); //? true
+
+            var h = [];
+            console.log(h ? 1 : 2); // ? 1, так как при приведении к булевому типу массив это true
+
+            // Переменные
+
+            // let a = a + 1;
+            // console.log(a); // ? Ref Error, обращаемся к несуществующей переменной
+
+            //
+
+            var b = b + 1;
+            console.log(b); // ? NaN - результат приведения undefined к числу, так как b неизвестна при присваивании
+
+            //
+
+            function foo(c) {
+                if (c > 0) {
+                    var c = c + 10;
+                    return c;
+                }
+                return c;
+            }
+
+            console.log(foo(15)); // ? 25// так как изначально c = 15, проваливаемся в if, где с увеличиваем на 10 и возвращаем 25. Не до конца понятное для меня поведение.
+
+            //
+            function foo2() {
+                console.log(d2);
+                let d1 = "1";
+                return function () {
+                    console.log(d1);
+                    console.log(d2);
+                };
+            }
+
+            const d2 = "2";
+            const x = foo2(); // 2
+
+            x(); // "1",2, просто вызвали замкнутую функцию
+
+            function giveMeX(showX) {
+                if (showX) {
+                    let x = 5;
+                }
+                return x;
+            }
+
+            console.log(giveMeX(false)); // ? просто вернет замкнутую функцию
+            console.log(giveMeX(true)); // ? просто вернет замкнутую функцию
+
+            //
+
+            console.log(x); // ? в x лежит замкнутая функция
+
+            var y = 1;
+
+            console.log(y); // ? 1, объявили переменную с значением 1
+
+            function car() {
+                if (false) {
+                    var y = 2;
+                }
+                console.log(y);
+            }
+
+            car(); // ? будет undefined, так как переменная создана с значением undefined, условие не отработало, и вернется, соответственно, undefined
+            console.log(y); // ? 1, значение переменной не менялось
+
+            //
+
+            var i = 1;
+            var j = {};
+
+            (function () {
+                i++;
+                j.j = 1;
+            })();
+            console.log(i, j); // ? результат ожидаемый, мы увеличили переменную на 1 и добавили в объект новое поле с значением 1
+
+            (function (i, j) {
+                i++;
+                j.k = 1;
+            })(i, j);
+            console.log(i, j); // ? вторая функция работает с аргументами, куда ммы передаем отпечаток i и ссылку на объект j. Объект по ссылке претерпел изменения после вызова первой iife, отпечаток i - нет.
+
+            //
+
+            // Бонус
+
+            // Создать объект всеми возможными способами
+
+            // и тд
+            const obj1 = {};
+            const obj2 = Object.assign({}, obj1);
+            const obj3 = Object.create({});
+            const obj4 = new Object();
+            console.log("obj", obj1, obj2, obj3, obj4);
+
+            //
+
+            // Написать функцию глубокого сравнения двух объектов:
+            // объекты могут быть любыми, и иметь любой уровень вложенности
+
+            const firstObj = { here: { is: "on", other: "3" }, object: "any" };
+            const secondObj = { here: { is: "on", other: "2" }, object: "any" };
+            const thirdObj = { here: { is: "on", other: "2" }, object: "any" };
+            const deepEqual = (firstObj, secondObj) => {
+                if (
+                    (firstObj === null || secondObj === null) &&
+                    firstObj !== secondObj
+                )
+                    return false;
+                if (
+                    typeof firstObj === "object" &&
+                    typeof secondObj === "object" &&
+                    firstObj !== secondObj
+                ) {
+                    const firstObjKeys = Object.keys(firstObj);
+                    const secondObjKeys = Object.keys(secondObj);
+                    if (firstObjKeys.length !== secondObjKeys.length)
+                        return false;
+                    if (firstObjKeys.length === 0 && secondObjKeys.length === 0)
+                        return true;
+                    return !firstObjKeys
+                        .map((el) => {
+                            if (
+                                !secondObj[el] &&
+                                firstObj[el] !== secondObj[el]
+                            )
+                                return false;
+                            if (
+                                typeof firstObj[el] === "object" &&
+                                typeof secondObj[el] === "object" &&
+                                firstObj[el] !== secondObj[el]
+                            ) {
+                                return deepEqual(firstObj[el], secondObj[el]);
+                            }
+                            return firstObj[el] === secondObj[el];
+                        })
+                        .some((el) => el === false);
+                }
+                return true;
+            };
+
+            console.log(deepEqual(firstObj, secondObj)); // false;
+            console.log(deepEqual(obj1, obj2)); // true;
+            console.log(deepEqual(secondObj, null)); // false;
+            console.log(deepEqual(null, null)); // true;
+            console.log(deepEqual(secondObj, thirdObj)); // true;
+        </script>
+    </body>
+</html>
